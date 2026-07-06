@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitkat</title>
+    <style>
+        /* Base Styles & Pink Theme */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #ffe5ec; /* Soft Pastel Pink */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ff4d6d; /* Darker Pink for Text */
+            overflow-x: hidden;
+            text-align: center;
+        }
+
+        /* Floating Background Animation */
+        .background-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Container for Content */
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(255, 77, 109, 0.1);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #ff758f;
+            margin-bottom: 40px;
+            font-weight: 600;
+        }
+
+        /* Main Message Card */
+        .message-card {
+            background: white;
+            padding: 40px 35px 35px 35px;
+            border-radius: 24px;
+            box-shadow: 0 12px 24px rgba(255, 117, 143, 0.12);
+            margin: 50px auto 40px auto;
+            max-width: 680px;
+            border: 2px solid #ffb3c1;
+            position: relative;
+        }
+
+        /* Hello Kitty Accent Positioned Exactly Over the Border */
+        .hk-icon-badge {
+            position: absolute;
+            top: -28px;
+            left: calc(50% - 28px);
+            width: 56px;
+            height: 56px;
+            background: white;
+            border: 2px solid #ffb3c1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(255, 117, 143, 0.1);
+        }
+
+        .hk-icon-badge img {
+            width: 38px;
+            height: 38px;
+            object-fit: contain;
+        }
+
+        .message-card p {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: #4a4a4a;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* Polaroid Photo Gallery Grid */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+            padding: 10px;
+        }
+
+        .polaroid {
+            background: white;
+            padding: 16px 16px 28px 16px;
+            border-radius: 4px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            transform: rotate(-2deg);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+            border: 1px solid #ffe5ec;
+            cursor: pointer;
+        }
+
+        .polaroid:nth-child(even) {
+            transform: rotate(2.5deg);
+        }
+
+        .polaroid:hover {
+            transform: scale(1.06) rotate(0deg);
+            box-shadow: 0 15px 30px rgba(255, 117, 143, 0.25);
+            z-index: 10;
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 2px;
+            background-color: #fcfcfc;
+        }
+
+        .caption {
+            font-family: 'Brush Script MT', 'Comic Sans MS', cursive, sans-serif;
+            font-size: 1.45rem;
+            margin-top: 18px;
+            color: #ff4d6d;
+            font-weight: bold;
+        }
+
+        /* POPUP MODAL BACKGROUND */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 229, 236, 0.88);
+            backdrop-filter: blur(6px);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* POPUP CONTENT BOX */
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 24px;
+            max-width: 480px;
+            width: 90%;
+            box-shadow: 0 25px 50px rgba(255, 77, 109, 0.22);
+            border: 3px solid #ffb3c1;
+            position: relative;
+            transform: scale(0.7);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+        }
+
+        .modal.show .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-img {
+            width: 100%;
+            max-height: 380px;
+            object-fit: cover;
+            border-radius: 16px;
+            border: 2px solid #ffe5ec;
+            margin-bottom: 20px;
+        }
+
+        .modal-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #4a4a4a;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        /* Close Button */
+        .close-btn {
+            background: #ff4d6d;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 4px 12px rgba(255, 77, 109, 0.3);
+        }
+
+        .close-btn:hover {
+            background: #ff758f;
+            transform: translateY(-1px);
+        }
+        
+        .close-btn:active {
+            transform: translateY(1px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Floating Background Elements -->
+    <div class="background-hearts" id="heartsContainer"></div>
+
+    <div class="container">
+        <header>
+            <h1>Kitkat's Space 🎀</h1>
+            <p class="subtitle">Click on any photo below for a little surprise! 🎀</p>
+        </header>
+
+        <!-- Main Letter/Appreciation -->
+        <section class="message-card">
+            <div class="hk-icon-badge">
+                <img src="images/hk.png" alt="Hello Kitty">
+            </div>
+            <p>
+                To the best homegirl in the entire world, Brooke (Kitkat)! 🌸 I know the distance between Morocco and the USA is huge, but honestly, having you as my friend is the biggest blessing ever. You are genuinely the most amazing, kind, and funniest person I know. Thank you for always being there, for keeping things hype, and for just being you. You deserve the world (and all the Hello Kitty stuff in existence). Love you tons, hg! Meowww! 💕
+            </p>
+        </section>
+
+        <!-- Polaroid Photo Gallery -->
+        <h2 style="font-size: 2.2rem; margin-top: 50px; margin-bottom: 5px;">Our Favorite Memories 🎀</h2>
+        <p class="subtitle" style="margin-bottom: 20px;">Click a photo for a special message! ✨</p>
+        
+        <section class="gallery">
+            
+            <!-- Polaroid 1 (Hello Kitty Hat Pic) -->
+            <div class="polaroid" onclick="openPopup('pic1', 'the hello kitty hat is too cute stop 😭 actual prettiest hg ever fr 🎀')">
+                <img id="img-pic1" src="images/pic1.jpg" onerror="tryAlternativeFormats(this, 'pic1')" alt="Brooke">
+                <div class="caption">The prettiest ✨</div>
+            </div>
+
+            <!-- Polaroid 2 (Close-up Pic) -->
+            <div class="polaroid" onclick="openPopup('pic2', 'literally gorgeous like how are u real?? actual favorite human status right here 💖')">
+                <img id="img-pic2" src="images/pic2.jpg" onerror="tryAlternativeFormats(this, 'pic2')" alt="Brooke">
+                <div class="caption">Favorite human 🌸</div>
+            </div>
+
+            <!-- Polaroid 3 (Third Pic) -->
+            <div class="polaroid" onclick="openPopup('pic3', 'always keeping the vibe immaculate. matching my energy 24/7 fr, glad I met u hg 🫶')">
+                <img id="img-pic3" src="images/pic3.jpg" onerror="tryAlternativeFormats(this, 'pic3')" alt="Brooke">
+                <div class="caption">Always keeping it hype 💕</div>
+            </div>
+
+        </section>
+    </div>
+
+    <!-- POPUP MODAL STRUCTURE -->
+    <div class="modal" id="popupModal" onclick="closePopupOnOutsideClick(event)">
+        <div class="modal-content">
+            <img id="modalImg" class="modal-img" src="" alt="Brooke">
+            <p id="modalText" class="modal-text"></p>
+            <button class="close-btn" onclick="closePopup()">Close ✨</button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT FOR FLOATING EFFECTS AND INTERACTIVE POPUPS -->
+    <script>
+        const resolvedImagePaths = {
+            pic1: 'images/pic1.jpg',
+            pic2: 'images/pic2.jpg',
+            pic3: 'images/pic3.jpg'
+        };
+
+        function tryAlternativeFormats(imgElement, baseName) {
+            const formats = ['.png', '.jpeg', '.PNG', '.JPEG', '.JPG'];
+            let currentTry = imgElement.getAttribute('data-retry-index') || 0;
+            currentTry = parseInt(currentTry);
+
+            if (currentTry < formats.length) {
+                const nextExtension = formats[currentTry];
+                const nextPath = 'images/' + baseName + nextExtension;
+                
+                imgElement.setAttribute('data-retry-index', currentTry + 1);
+                resolvedImagePaths[baseName] = nextPath;
+                imgElement.src = nextPath;
+            }
+        }
+
+        function openPopup(baseName, appreciationText) {
+            const modal = document.getElementById('popupModal');
+            document.getElementById('modalImg').src = resolvedImagePaths[baseName];
+            document.getElementById('modalText').innerText = appreciationText;
+            modal.classList.add('show');
+        }
+
+        function closePopup() {
+            const modal = document.getElementById('popupModal');
+            modal.classList.remove('show');
+        }
+
+        function closePopupOnOutsideClick(event) {
+            if (event.target.id === 'popupModal') {
+                closePopup();
+            }
+        }
+
+        function createHeart() {
+            const container = document.getElementById('heartsContainer');
+            if(!container) return;
+            const heart = document.createElement('div');
+            
+            const shapes = ['❤️', '🌸', '🎀', '💕', '✨', '🐱', '💝'];
+            heart.innerHTML = shapes[Math.floor(Math.random() * shapes.length)];
+            
+            heart.style.position = 'absolute';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.top = '100vh';
+            heart.style.fontSize = Math.random() * 20 + 15 + 'px';
+            heart.style.opacity = Math.random() * 0.5 + 0.5;
+            heart.style.transition = 'transform 6s linear, opacity 6s linear';
+            
+            container.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.style.transform = `translateY(-105vh) rotate(${Math.random() * 360}deg)`;
+            }, 50);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 6000);
+        }
+        
+        setInterval(createHeart, 400);
+    </script>
+</body>
+</html>
