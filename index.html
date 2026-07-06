@@ -277,11 +277,11 @@
 
     <!-- JAVASCRIPT FOR FLOATING EFFECTS AND INTERACTIVE POPUPS -->
     <script>
-        const resolvedImagePaths = {
-            pic1: 'images/pic1.jpg',
-            pic2: 'images/pic2.jpg',
-            pic3: 'images/pic3.jpg'
-        };
+       const resolvedImagePaths = {
+    pic1: 'pic1.jpg',
+    pic2: 'pic2.jpg',
+    pic3: 'pic3.jpg'
+};
 
         function tryAlternativeFormats(imgElement, baseName) {
             const formats = ['.png', '.jpeg', '.PNG', '.JPEG', '.JPG'];
@@ -290,7 +290,7 @@
 
             if (currentTry < formats.length) {
                 const nextExtension = formats[currentTry];
-                const nextPath = 'images/' + baseName + nextExtension;
+                const nextPath = baseName + nextExtension;
                 
                 imgElement.setAttribute('data-retry-index', currentTry + 1);
                 resolvedImagePaths[baseName] = nextPath;
